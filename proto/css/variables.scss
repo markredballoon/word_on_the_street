@@ -1,0 +1,18 @@
+$ui_color: rgba(0,105,92,1);
+$ui_color_alt: #004D40;
+
+$map_bg_color: rgba(86, 114, 142, 1);
+
+$text_color: #eee;
+$button_text_color:$text_color;
+
+$footer_height: 4rem;
+$header_height: 4rem;
+
+$ui_height: $footer_height + $header_height;
+$main_height: $ui_height - 1rem;
+
+$icon_height: 12%;
+
+
+$font_sans_main: 'Lato', sans-serif;

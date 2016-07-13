@@ -3,13 +3,14 @@ use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
 require '../vendor/autoload.php';
-require_once 'config.php';
+require 'config.php';
 
 $app = new \Slim\App(["settings" => $config]);
-$app->get('/hello/{name}', function (Request $request, Response $response) {
-    $name = $request->getAttribute('name');
-    $response->getBody()->write("Hello, $name");
-
+$app->get('/', function (Request $request, Response $response) {
+    $db = connect_db();
+    $result = $db->query( 'SELECT id FROM users' );
+    $response->getBody()->write("Hello");
     return $response;
 });
+
 $app->run();
