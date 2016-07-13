@@ -1,4 +1,8 @@
-var userPos = {lat:51.001, lng:1.001};
+// =====     =====     =====     =====     =====     =====
+// MAP
+// =====     =====     =====     =====     =====     =====
+
+var userPos = {lat:900.001, lng:900.001};
 
 var map;
 function initMap() {
@@ -16,28 +20,6 @@ function initMap() {
     });
 }
 
-function serverComunication( request ){
-    //  Uses AJAX to communicate with the server
-    $.ajax({
-        url: '/path/to/file',
-        type: 'default GET (Other values: POST)',
-        dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
-        data: {param1: 'value1'}
-    })
-    .done(function(data) {
-        console.log("success");
-        // Decode data?
-        return data;
-    })
-    .fail(function() {
-        console.log("error");
-    })
-    .always(function() {
-        console.log("complete");
-    });
-};
-
-
 // Get the users position:
 function getLocation(){
     if (navigator.geolocation) {
@@ -50,6 +32,7 @@ function getLocation(){
             var fallbackoutput = locationFallback();
             userPos.lat = fallbackoutput.lat;
             userPos.lng = fallbackoutput.lng;
+            $(document).trigger('positionFound');
         });
     } else {
         var fallbackoutput = locationFallback();
@@ -59,9 +42,7 @@ function getLocation(){
 }
 
 function locationFallback(){
-
     var userPosIP;
-
     $.getJSON('http://ipinfo.io', function(data){
         var dataArray = data.loc.split(',');
         userPosIP = {
@@ -72,17 +53,9 @@ function locationFallback(){
     });
 }
 
-$(document).ready(function($) {
-    getLocation();
-});
-
-$(document).on('positionFound', function(event) {
-    $('body').append('<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBewft-gujSQLIAa0jS_1LG8ceGBzt_EOU&callback=initMap" async defer></script>')
-});
-
-
-
-//
+// =====     =====     =====     =====     =====     =====
+// Front End
+// =====     =====     =====     =====     =====     =====
 var element, circle, d, x, y;
 $("button").click(function(e){
 
@@ -105,3 +78,93 @@ $("button").click(function(e){
 
 	circle.css({top: y+'px', left: x+'px'}).addClass("animate");
 })
+
+
+// =====     =====     =====     =====     =====     =====
+// Communication
+// =====     =====     =====     =====     =====     =====
+function logIn(name, password){
+    $.ajax({
+        url: '../src/public/',
+        type: 'GET',
+        data: {
+            action: 'login',
+            username: name,
+            password: password
+        }
+    })
+    .done(function(data) {
+        // Update cookies. create private that allows user to make posts in future.
+        var respObj = JSON.parse(data);
+        if (respObj.response === 'valid'){
+            $('.user-image img' ,'#user-info').attr('src', respObj.userinfo.profile_picture);
+            $('.user-name' ,'#user-info').html(respObj.userinfo.username);
+            uiOpen('user-info');
+        } else {
+            console.log('incorrect');
+        };
+
+    })
+    .fail(function() {
+        console.log("error");
+    })
+    .always(function() {
+        console.log("complete");
+    });
+}
+
+function logOut(){
+    $('#ui').addClass('overwrite');
+    setTimeout(function(){
+        $('#ui').removeClass('overwrite');
+        // Clear cookies then refresh page.
+        $('.user-image img' ,'#user-info').attr('src', 'images/holding.jpg');
+        $('.user-name' ,'#user-info').html('Username');
+        $('#ui>div').addClass('hidden');
+        $('#no-login').removeClass('hidden');
+    }, 500)
+}
+
+function uiOpen(target){
+    $('#ui').addClass('overwrite');
+
+    setTimeout(function(){
+        $('#ui').removeClass('overwrite');
+        $('#ui>div').addClass('hidden');
+        $('input[type="text"]', '#ui').val('');
+        $('#'+target).removeClass('hidden');
+    }, 500);
+    $('.circle', '#ui').remove();
+}
+
+$('#sign-in-sumbit').on('click', function(event) {
+    var inputName = $('input[name="username"]','#sign-in').val();
+    var inputPassword = $('input[name="password"]','#sign-in').val();
+    logIn(inputName, inputPassword);
+    console.log(inputName);
+});
+
+$('input').keypress(function(e) {
+    if(e.which == 13) {
+        $(this).next('button').trigger('click');
+    }
+});
+// =====     =====     =====     =====     =====     =====
+// Ready
+// =====     =====     =====     =====     =====     =====
+$(document).ready(function($) {
+    getLocation();
+
+});
+
+$(document).on('positionFound', function(event) {
+    if (userPos.lat < 180 && userPos.lng < 180) {
+        $('body').append('<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBewft-gujSQLIAa0jS_1LG8ceGBzt_EOU&callback=initMap" async defer></script>')
+    }
+
+});
+
+
+$(window).resize(function(event) {
+    map.panTo(userPos);
+});

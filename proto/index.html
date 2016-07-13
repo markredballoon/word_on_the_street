@@ -21,29 +21,51 @@
             </div>
 
 
-            <div class="account">
-                <div class="user-info" onclick="editProfile()">
-                    <div class="user-image">
-                        <div class="image-wrap">
-                            <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=User%20Image&w=200&h=200" alt="">
+            <div class="account" id="ui">
+
+                <div id="user-info" class="hidden">
+                    <div class="user-info" onclick="editProfile()">
+                        <div class="user-image">
+                            <div class="image-wrap">
+                                <img src="https://placeholdit.imgix.net/~text?txtsize=33&txt=User%20Image&w=200&h=200" alt="">
+                            </div>
                         </div>
+                        <div class="user-name">Username</div>
                     </div>
-                    <div class="user-name">Username</div>
+                    <button type="button" class="sign-out" onclick="logOut()">
+                        Log out
+                    </button>
                 </div>
-                <button type="button" class="sign-out" onclick="signOut()">
-                    Log out
-                </button>
-            </div>
 
-            <div class="account">
+                <div id="no-login">
+                    <button type="button" class="register" onclick="uiOpen('register')">
+                        Register
+                    </button>
 
-                <button type="button" class="register" onclick="signOut()">
-                    Register
-                </button>
+                    <button type="button" class="sign-in" onclick="uiOpen('sign-in')">
+                        Sign in
+                    </button>
 
-                <button type="button" class="sign-in" onclick="signOut()">
-                    Sign in
-                </button>
+                </div>
+
+                <div id="sign-in" class="hidden">
+                    <form name="sign-in-form" id="sign-in-form" class="account-form" action="#" method="post">
+                        <input type="text" name="username" value="" placeholder="Username">
+                        <input type="text" name="password" value="" placeholder="****">
+                        <button type="button" name="sign-in-sumbit" class="sign-in" id="sign-in-sumbit">Sumbit</button>
+                        <button type="button" name="sign-in-back" class="sign-in" id="sign-in-back" onclick="uiOpen('no-login')">Back</button>
+                    </form>
+                </div>
+
+                <div id="register" class="hidden">
+                    <form name="register-form" id="register-form" class="account-form" action="#" method="post">
+                        <input type="text" name="username" value="" placeholder="Username">
+                        <input type="text" name="username" value="" placeholder="Username">
+                        <input type="text" name="password" value="" placeholder="****">
+                        <button type="button" name="register-sumbit" class="sign-in" id="register-sumbit">Sumbit</button>
+                        <button type="button" name="register-back" class="sign-in" id="register-back" onclick="uiOpen('no-login')">Back</button>
+                    </form>
+                </div>
 
             </div>
 
@@ -59,7 +81,7 @@
         </main>
 
         <div id="app">
-            
+
         </div>
 
         <footer>
