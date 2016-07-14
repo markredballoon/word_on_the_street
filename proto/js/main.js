@@ -29,27 +29,21 @@ function getLocation(){
             userPos.lng = position.coords.longitude;
             $(document).trigger('positionFound');
         }, function(){
-            var fallbackoutput = locationFallback();
-            userPos.lat = fallbackoutput.lat;
-            userPos.lng = fallbackoutput.lng;
-            $(document).trigger('positionFound');
+            locationFallback();
         });
     } else {
-        var fallbackoutput = locationFallback();
-        userPos.lat = fallbackoutput.lat;
-        userPos.lng = fallbackoutput.lng;
+        locationFallback();
     };
 }
 
 function locationFallback(){
     var userPosIP;
     $.getJSON('http://ipinfo.io', function(data){
+        console.log(data.loc);
         var dataArray = data.loc.split(',');
-        userPosIP = {
-            lat: parseInt(dataArray[0]),
-            lng: parseInt(dataArray[1])
-        };
-        console.log(dataArray);
+        userPos.lat = parseInt(dataArray[0]);
+        userPos.lng = parseInt(dataArray[1]);
+        $(document).trigger('positionFound');
     });
 }
 
